@@ -59,7 +59,7 @@ class XRootDFileStorage(PyFSFileStorage):
         # Fall-back to PyFS in case of non-xrootd URL
         if not self.fileurl.startswith(('root://', 'roots://')):
             return super(XRootDFileStorage, self)._get_fs(
-                create_dir=create_dir)
+                create_dir=self.create_dir)
         filedir = dirname(self.fileurl)
         filename = basename(self.fileurl)
 
@@ -68,7 +68,7 @@ class XRootDFileStorage(PyFSFileStorage):
         else:
             fs = XRootDPyFS(filedir, query)
 
-        if create_dir:
+        if self.create_dir:
             fs.makedir('', recursive=True, allow_recreate=True)
 
         return (fs, filename)
@@ -153,7 +153,7 @@ class EOSFileStorage(XRootDFileStorage):
         if self.bookingsize:
             query['eos.bookingsize'] = self.bookingsize
 
-        return super(EOSFileStorage, self)._get_fs(create_dir=create_dir,
+        return super(EOSFileStorage, self)._get_fs(create_dir=self.create_dir,
                                                    query=query)
 
     @ensure_bookingsize(with_arg=True)
